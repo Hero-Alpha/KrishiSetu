@@ -8,6 +8,14 @@ export default defineConfig({
     react(),
     tailwindcss()
   ],
+  build: {
+    outDir: 'dist',
+    rollupOptions: {
+      output: {
+        manualChunks: undefined,
+      },
+    }
+  },
   server: {
     port: 3000,
     proxy: {
