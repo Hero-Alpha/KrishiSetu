@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Create axios instance
 const API = axios.create({
-  baseURL: 'https://krishisetu-2rxi.onrender.com',
+  baseURL: 'https://krishisetu-2rxi.onrender.com/api',
   timeout: 10000,
 });
 
