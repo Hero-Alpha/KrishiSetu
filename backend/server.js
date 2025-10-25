@@ -19,7 +19,26 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // MIDDLEWARES
-app.use(cors());
+// Configure CORS properly
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true);
+
+    const allowedOrigins = [
+      process.env.CLIENT_URL,
+    ].filter(Boolean);
+
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      console.log('Blocked by CORS:', origin);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'x-auth-token']
+}));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
@@ -37,15 +56,15 @@ app.use('/api/profile', profileRoutes);
 
 // HEALTH CHECK
 app.get('/api/health', (req, res) => {
-  res.json({ 
-    status: 'OK', 
+  res.json({
+    status: 'OK',
     message: 'KrishiSetu API is running!',
     timestamp: new Date().toISOString()
   });
 });
 
 app.get('/api', (req, res) => {
-    res.json({message: "KrishiSetu API is running"});
+  res.json({ message: "KrishiSetu API is running" });
 });
 
 // 404 HANDLER - FIXED: Remove the problematic route
@@ -85,8 +104,8 @@ app.use((err, req, res, next) => {
 
 // DATABSE CONNECTION
 mongoose.connect(process.env.MONGO_URI)
-    .then(() => console.log("MongoDB Connected"))
-    .catch(err => console.log("MongoDB Connectoin Error: ", err));
+  .then(() => console.log("MongoDB Connected"))
+  .catch(err => console.log("MongoDB Connectoin Error: ", err));
 
 // START SERVER
 app.listen(PORT, () => {
